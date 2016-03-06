@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <boost/asio.hpp>
 #include "server.hpp"
+#include "threadpool.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -41,12 +42,12 @@ int main(int argc, char* argv[])
     }
     
 
-
+    thread_pool pool(boost::thread::hardware_concurrency());
     // Initialise the server.
-    http::server::server s(addr, port, dir);
+    http::server::server s(pool.get_io_service(), addr, port, dir);
 
     // Run the server until stopped.
-    s.run();
+    pause();
   }
   catch (std::exception& e)
   {

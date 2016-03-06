@@ -15,9 +15,9 @@
 namespace http {
 namespace server {
 
-server::server(const std::string& address, const std::string& port,
+server::server(boost::asio::io_service& io_service, const std::string& address, const std::string& port,
     const std::string& doc_root)
-  : io_service_(),
+  : io_service_(io_service),
     signals_(io_service_),
     acceptor_(io_service_),
     connection_manager_(),
@@ -46,14 +46,6 @@ server::server(const std::string& address, const std::string& port,
   do_accept();
 }
 
-void server::run()
-{
-  // The io_service::run() call will block until all asynchronous operations
-  // have finished. While the server is running, there is always at least one
-  // asynchronous operation outstanding: the asynchronous accept call waiting
-  // for new incoming connections.
-  io_service_.run();
-}
 
 void server::do_accept()
 {
