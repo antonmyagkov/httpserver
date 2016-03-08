@@ -1,7 +1,7 @@
 #ifndef __LOG1_H__
 #define __LOG1_H__
 
-#include <sstream>
+#include <fstream>
 #include <string>
 #include <stdio.h>
 
@@ -14,23 +14,24 @@ class Log
 public:
     Log();
     virtual ~Log();
-    std::ostringstream& Get(TLogLevel level = logINFO);
+    std::ofstream& Get(TLogLevel level = logINFO);
 public:
     static TLogLevel& ReportingLevel();
     static std::string ToString(TLogLevel level);
     static TLogLevel FromString(const std::string& level);
 protected:
-    std::ostringstream os;
+    std::ofstream os;
 private:
     Log(const Log&);
     Log& operator =(const Log&);
 };
 
 inline Log::Log()
+  : os("log.log")
 {
 }
 
-inline std::ostringstream& Log::Get(TLogLevel level)
+inline std::ofstream& Log::Get(TLogLevel level)
 {
     os << "- " << NowTime();
     os << " " << ToString(level) << ": ";
@@ -41,8 +42,6 @@ inline std::ostringstream& Log::Get(TLogLevel level)
 inline Log::~Log()
 {
     os << std::endl;
-    fprintf(stderr, "%s", os.str().c_str());
-    fflush(stderr);
 }
 
 inline TLogLevel& Log::ReportingLevel()
