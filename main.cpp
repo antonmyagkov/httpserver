@@ -11,6 +11,7 @@
 #include "server.hpp"
 #include "threadpool.hpp"
 #include "log.h"
+#include <syslog.h>
 
 int main(int argc, char* argv[])
 {
@@ -37,17 +38,17 @@ int main(int argc, char* argv[])
       }
     }
 
-   // if (daemon(0, 0) == -1) {
-   //   perror("daemon failed");
-   //   return -1;
-   // }
+    if (daemon(0, 0) == -1) {
+      perror("daemon failed");
+      return -1;
+    }
     
-    FILE_LOG(logINFO) << "address " << addr << " port " << port
-                      << " directory " << dir;
+    fprintf(Log::GetLog(), "address %s port %s directory %s\n", addr.c_str(),
+                            port.c_str(), dir.c_str() );
 
-    FILE_LOG(logINFO) << "thread count "
-                      << boost::thread::hardware_concurrency();
-    thread_pool pool(boost::thread::hardware_concurrency());
+    fprintf(Log::GetLog(), "thread count: %d\n",
+           boost::thread::hardware_concurrency() );
+    thread_pool pool(1);
     // Initialise the server.
     http::server::server s(pool.get_io_service(), addr, port, dir);
 
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
   }
   catch (std::exception& e)
   {
-    FILE_LOG(logINFO) << "exception: " << e.what();
+    fprintf(Log::GetLog(), "exception: %s",  e.what());
   }
 
   return 0;
