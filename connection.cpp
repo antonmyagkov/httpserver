@@ -13,6 +13,7 @@
 #include <vector>
 #include "connection_manager.hpp"
 #include "request_handler.hpp"
+#include "log.h"
 
 namespace http {
 namespace server {
@@ -27,6 +28,7 @@ connection::connection(boost::asio::ip::tcp::socket socket,
 
 void connection::start()
 {
+  FILE_LOG(logINFO) << "new connection";
   do_read();
 }
 
@@ -41,20 +43,25 @@ void connection::do_read()
   socket_.async_read_some(boost::asio::buffer(buffer_),
       [this, self](boost::system::error_code ec, std::size_t bytes_transferred)
       {
+        FILE_LOG(logINFO) << "read " << bytes_transferred 
+                           << " bytes with status " << ec.value();
         if (!ec)
         {
           request_parser::result_type result;
           std::tie(result, std::ignore) = request_parser_.parse(
               request_, buffer_.data(), buffer_.data() + bytes_transferred);
 
+          FILE_LOG(logINFO) << "parser return " << result;
           if (result == request_parser::good)
           {
             request_handler_.handle_request(request_, reply_);
+            FILE_LOG(logINFO) << "reply: " << reply_.status;
             do_write();
           }
           else if (result == request_parser::bad)
           {
             reply_ = reply::stock_reply(reply::bad_request);
+            FILE_LOG(logINFO) << "reply: " << reply_.status;
             do_write();
           }
           else

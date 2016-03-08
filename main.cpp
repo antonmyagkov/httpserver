@@ -10,11 +10,13 @@
 #include <boost/asio.hpp>
 #include "server.hpp"
 #include "threadpool.hpp"
+#include "log.h"
 
 int main(int argc, char* argv[])
 {
   try
   {
+   FILE_LOG(logINFO) << "Starting...";
     int opt = 0;
     std::string addr;
     std::string port;
@@ -36,10 +38,10 @@ int main(int argc, char* argv[])
       }
     }
 
-    if (daemon(0, 0) == -1) {
-      perror("daemon failed");
-      return -1;
-    }
+   // if (daemon(0, 0) == -1) {
+   //   perror("daemon failed");
+   //   return -1;
+   // }
     
 
     thread_pool pool(boost::thread::hardware_concurrency());
