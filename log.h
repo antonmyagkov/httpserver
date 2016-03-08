@@ -9,22 +9,31 @@ inline std::string NowTime();
 
 enum TLogLevel {logERROR, logWARNING, logINFO, logDEBUG, logDEBUG1, logDEBUG2, logDEBUG3, logDEBUG4};
 
+
 class Log
 {
 public:
-    Log();
     virtual ~Log();
     std::ofstream& Get(TLogLevel level = logINFO);
 public:
     static TLogLevel& ReportingLevel();
     static std::string ToString(TLogLevel level);
     static TLogLevel FromString(const std::string& level);
+
+   static Log& GetLog();
 protected:
+    Log();
     std::ofstream os;
 private:
     Log(const Log&);
     Log& operator =(const Log&);
 };
+
+inline Log&  Log::GetLog() {
+  static Log log;
+
+  return log;
+}
 
 inline Log::Log()
   : os("/home/box/log.log")
@@ -74,7 +83,7 @@ inline TLogLevel Log::FromString(const std::string& level)
         return logWARNING;
     if (level == "ERROR")
         return logERROR;
-    Log().Get(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
+    GetLog().Get(logWARNING) << "Unknown logging level '" << level << "'. Using INFO level as default.";
     return logINFO;
 }
 
@@ -82,7 +91,7 @@ typedef Log FILELog;
 
 #define FILE_LOG(level) \
     if (level > FILELog::ReportingLevel()) ; \
-    else Log().Get(level)
+    else Log::GetLog().Get(level)
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 
