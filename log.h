@@ -27,7 +27,7 @@ private:
 };
 
 inline Log::Log()
-  : os("log.log")
+  : os("/home/box/log.log")
 {
 }
 
