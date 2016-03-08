@@ -38,10 +38,10 @@ int main(int argc, char* argv[])
       }
     }
 
-   // if (daemon(0, 0) == -1) {
-   //   perror("daemon failed");
-   //   return -1;
-   // }
+    if (daemon(0, 0) == -1) {
+      perror("daemon failed");
+      return -1;
+    }
     
 
     thread_pool pool(boost::thread::hardware_concurrency());
