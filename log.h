@@ -36,7 +36,7 @@ inline Log&  Log::GetLog() {
 }
 
 inline Log::Log()
-  : os("/home/box/log.log")
+  : os("/home/box/log.log", std::ofstream::out | std::ofstream::app)
 {
 }
 

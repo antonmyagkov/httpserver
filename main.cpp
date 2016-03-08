@@ -16,7 +16,6 @@ int main(int argc, char* argv[])
 {
   try
   {
-   FILE_LOG(logINFO) << "Starting...";
     int opt = 0;
     std::string addr;
     std::string port;
