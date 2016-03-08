@@ -10,23 +10,11 @@
 #include <boost/asio.hpp>
 #include "server.hpp"
 #include "threadpool.hpp"
-#include "log.h"
-#include <syslog.h>
 
 int main(int argc, char* argv[])
 {
   try
   {
-    FILE* f = fopen("/home/box/start.log", "w");
-
-   if (!f) {
-     return 0;
-   }
-
-   fprintf(f, "parameters:\n");
-   for (int i = 1; i < argc; i++) {
-     fprintf(f, "%s\n", argv[i]);
-   }
     
     int opt = 0;
     std::string addr;
@@ -44,27 +32,15 @@ int main(int argc, char* argv[])
         dir = argv[optind];
         break;
       default: /* '?' */
-        fprintf(f, "failed to parse parameter %c", (char) opt);
-        fclose(f);
         exit(EXIT_FAILURE);
       }
     }
 
-    fprintf(f, "address %s port %s directory %s\n", addr.c_str(), 
-               port.c_str(), dir.c_str());
-
     if (daemon(0, 0) == -1) {
-      fprintf(f, "daemon failed");
-      fclose(f);
       return -1;
     }
     
-    fprintf(Log::GetLog(), "address %s port %s directory %s\n", addr.c_str(),
-                            port.c_str(), dir.c_str() );
-
-    fprintf(Log::GetLog(), "thread count: %d\n",
-           boost::thread::hardware_concurrency() );
-    thread_pool pool(1);
+    thread_pool pool(boost::thread::hardware_concurrency());
     // Initialise the server.
     http::server::server s(pool.get_io_service(), addr, port, dir);
 
@@ -73,7 +49,6 @@ int main(int argc, char* argv[])
   }
   catch (std::exception& e)
   {
-    fprintf(Log::GetLog(), "exception: %s",  e.what());
   }
 
   return 0;

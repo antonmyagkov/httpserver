@@ -16,7 +16,7 @@ link_directories(${Boost_LIBRARY_DIR})
 
 set(Boost_LIBRARIES ${Boost_LIBRARIES} boost_system boost_thread)
 
-set(SOURCE_EXE log.h threadpool.hpp connection.cpp connection.hpp connection_manager.cpp connection_manager.hpp header.hpp main.cpp mime_types.cpp mime_types.hpp reply.cpp reply.hpp request_handler.cpp request_handler.hpp request.hpp request_parser.cpp request_parser.hpp server.cpp server.hpp)
+set(SOURCE_EXE threadpool.hpp connection.cpp connection.hpp connection_manager.cpp connection_manager.hpp header.hpp main.cpp mime_types.cpp mime_types.hpp reply.cpp reply.hpp request_handler.cpp request_handler.hpp request.hpp request_parser.cpp request_parser.hpp server.cpp server.hpp)
 
 add_executable(final ${SOURCE_EXE})
 target_link_libraries(final ${CMAKE_THREAD_LIBS_INIT} )

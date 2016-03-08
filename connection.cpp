@@ -13,7 +13,6 @@
 #include <vector>
 #include "connection_manager.hpp"
 #include "request_handler.hpp"
-#include "log.h"
 
 namespace http {
 namespace server {
@@ -44,23 +43,18 @@ void connection::do_read()
       {
         if (!ec)
         {
-          fprintf(Log::GetLog(), "data: %s\n",
-                  std::string(buffer_.data(), bytes_transferred).c_str());
           request_parser::result_type result;
           std::tie(result, std::ignore) = request_parser_.parse(
               request_, buffer_.data(), buffer_.data() + bytes_transferred);
 
-          fprintf(Log::GetLog(), "parser return  %d\n", result);
           if (result == request_parser::good)
           {
             request_handler_.handle_request(request_, reply_);
-            fprintf(Log::GetLog(), "reply: %d\n", reply_.status);
             do_write();
           }
           else if (result == request_parser::bad)
           {
             reply_ = reply::stock_reply(reply::bad_request);
-            fprintf(Log::GetLog(), "reply: %d\n",  reply_.status);
             do_write();
           }
           else
