@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
    }
 
    fprintf(f, "parameters:\n");
-   for (i = 1; i < argc; i++) {
+   for (int i = 1; i < argc; i++) {
      fprintf(f, "%s\n", argv[i]);
    }
     
