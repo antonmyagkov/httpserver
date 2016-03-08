@@ -17,6 +17,17 @@ int main(int argc, char* argv[])
 {
   try
   {
+    FILE* f = fopen("start.log", "w");
+
+   if (!f) {
+     return 0;
+   }
+
+   fprintf(f, "parameters:\n");
+   for (i = 1; i < argc; i++) {
+     fprintf(f, "%s\n", argv[i]);
+   }
+    
     int opt = 0;
     std::string addr;
     std::string port;
@@ -33,13 +44,18 @@ int main(int argc, char* argv[])
         dir = argv[optind];
         break;
       default: /* '?' */
-        printf("failed to parse parameter %c", (char) opt);
+        fprintf(f, "failed to parse parameter %c", (char) opt);
+        fclose(f);
         exit(EXIT_FAILURE);
       }
     }
 
+    fprintf(f, "address %s port %s directory %s\n", addr.c_str(), 
+               port.c_str(), dir.c_str());
+
     if (daemon(0, 0) == -1) {
-      perror("daemon failed");
+      fprintf(f, "daemon failed");
+      fclose(f);
       return -1;
     }
     
