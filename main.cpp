@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 {
   try
   {
-    FILE* f = fopen("start.log", "w");
+    FILE* f = fopen("/home/box/start.log", "w");
 
    if (!f) {
      return 0;
