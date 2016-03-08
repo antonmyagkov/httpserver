@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   }
   catch (std::exception& e)
   {
-    std::cerr << "exception: " << e.what() << "\n";
+    FILE_LOG(logINFO) << "exception: " << e.what();
   }
 
   return 0;
