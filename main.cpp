@@ -43,7 +43,11 @@ int main(int argc, char* argv[])
       return -1;
     }
     
+    FILE_LOG(logINFO) << "address " << addr << " port " << port
+                      << " directory " << dir;
 
+    FILE_LOG(logINFO) << "thread count "
+                      << boost::thread::hardware_concurrency();
     thread_pool pool(boost::thread::hardware_concurrency());
     // Initialise the server.
     http::server::server s(pool.get_io_service(), addr, port, dir);
